@@ -5,7 +5,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 
-public class Util2 {
+public class Util {
 
     // реализуйте настройку соеденения с БД
 

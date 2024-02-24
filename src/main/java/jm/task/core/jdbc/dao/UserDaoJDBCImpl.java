@@ -10,6 +10,7 @@ import java.util.List;
 import static jm.task.core.jdbc.util.Util.getConnection;
 
 public class UserDaoJDBCImpl implements UserDao {
+
     public UserDaoJDBCImpl() {
 
     }
@@ -17,8 +18,6 @@ public class UserDaoJDBCImpl implements UserDao {
     Connection connection = getConnection();
 
     public void createUsersTable() {
-        Statement statement = null;
-
         String sql = "CREATE TABLE IF NOT EXISTS users (" +
                 "    id BIGINT PRIMARY KEY AUTO_INCREMENT," +
                 "    name VARCHAR(255) NOT NULL," +
@@ -26,53 +25,28 @@ public class UserDaoJDBCImpl implements UserDao {
                 "    age INT NOT NULL" +
                 ")";
 
-        try {
-            statement = connection.createStatement();
+        try (Statement statement = connection.createStatement()) {
             statement.executeUpdate(sql);
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-
         }
     }
 
-    public void dropUsersTable() {
-        Statement statement = null;
 
+    public void dropUsersTable() {
         String sql = "DROP TABLE IF EXISTS users";
 
-        try {
-            statement = connection.createStatement();
+        try (Statement statement = connection.createStatement()) {
             statement.executeUpdate(sql);
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-
         }
     }
 
     public void saveUser(String name, String lastName, byte age) throws SQLException {
-        PreparedStatement preparedStatement = null;
-
         String sql = "INSERT INTO users (name, lastname, age) VALUES(?, ?, ?)";
 
-        try {
-            preparedStatement = connection.prepareStatement(sql);
-
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, name);
             preparedStatement.setString(2, lastName);
             preparedStatement.setByte(3, age);
@@ -80,92 +54,57 @@ public class UserDaoJDBCImpl implements UserDao {
             preparedStatement.executeUpdate();
 
             System.out.println("User с именем " + name + " добавлен в базу данных");
+
         } catch (SQLException e) {
             e.printStackTrace();
-
-        } finally {
-            if (preparedStatement != null) {
-                preparedStatement.close();
-            }
-
         }
     }
 
     public void removeUserById(long id) throws SQLException {
-        PreparedStatement preparedStatement = null;
-
         String sql = "DELETE FROM users WHERE id=?";
 
-        try {
-            preparedStatement = connection.prepareStatement(sql);
-
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setLong(1, id);
-
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (preparedStatement != null) {
-                preparedStatement.close();
-            }
-
         }
     }
 
     public List<User> getAllUsers() throws SQLException {
         List<User> users = new ArrayList<>();
-
         String sql = "SELECT id, name, age, lastname FROM users";
 
-        Statement statement = null;
-        try {
-            statement = connection.createStatement();
-
-            ResultSet resultSet = statement.executeQuery(sql);
+        try (Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(sql)) {
 
             while (resultSet.next()) {
-
                 User user = new User();
                 user.setId(resultSet.getLong("id"));
                 user.setName(resultSet.getString("name"));
                 user.setAge((byte) resultSet.getInt("age"));
                 user.setLastName(resultSet.getString("lastname"));
-
                 users.add(user);
-
-
             }
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (statement != null) {
-                statement.close();
-            }
-
         }
 
-        System.out.println(users.toString());
+        System.out.println(users);
         return users;
     }
 
+
     public void cleanUsersTable() {
-        Statement statement = null;
         String sql = "DELETE FROM users";
 
-        try {
-            statement = connection.createStatement();
+        try (Statement statement = connection.createStatement()) {
             statement.executeUpdate(sql);
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-
         }
     }
+
+
+
 }

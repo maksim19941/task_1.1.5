@@ -12,8 +12,8 @@ import java.util.List;
 
 
 
-public class UserServiceImpl extends UserDaoJDBCImpl implements UserService {
-    UserDao userDaoJDBC = new UserDaoJDBCImpl();
+public class UserServiceImpl implements UserService {
+   private UserDao userDaoJDBC = new UserDaoJDBCImpl();
 
     @Override
     public void createUsersTable() {
@@ -26,17 +26,17 @@ public class UserServiceImpl extends UserDaoJDBCImpl implements UserService {
     }
 
     @Override
-    public void saveUser(String name, String lastName, byte age) throws SQLException {
+    public void saveUser(String name, String lastName, byte age)  {
         userDaoJDBC.saveUser(name, lastName, age);
     }
 
     @Override
-    public void removeUserById(long id) throws SQLException {
+    public void removeUserById(long id) {
         userDaoJDBC.removeUserById(id);
     }
 
     @Override
-    public List<User> getAllUsers() throws SQLException {
+    public List<User> getAllUsers()  {
         return userDaoJDBC.getAllUsers();
     }
 

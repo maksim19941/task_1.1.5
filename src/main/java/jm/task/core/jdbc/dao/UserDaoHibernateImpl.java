@@ -50,6 +50,7 @@ public class UserDaoHibernateImpl implements UserDao {
     }
     @Override
     public void saveUser(String name, String lastName, byte age) {
+
         String sql = "INSERT INTO users (name, lastname, age) VALUES(?, ?, ?)";
 
         try (Session session = getSessionFactory().openSession()) {
@@ -60,7 +61,9 @@ public class UserDaoHibernateImpl implements UserDao {
                     .setParameter(3, age)
                     .executeUpdate();
             transaction.commit();
+
             System.out.println("User с именем " + name + " добавлен в базу данных");
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -68,6 +71,7 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public void removeUserById(long id) {
+
         String sql = "DELETE FROM users WHERE id=?";
 
         try (Session session = getSessionFactory().openSession()) {
@@ -83,8 +87,11 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public List<User> getAllUsers() {
+
         String sql = "SELECT id, name, age, lastname FROM users";
+
         List<User> user = new ArrayList<>();
+
         try(Session session = getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
             SQLQuery query = session.createSQLQuery(sql);
@@ -105,6 +112,7 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public void cleanUsersTable() {
+
         String sql = "DELETE FROM users";
 
         try (Session session = getSessionFactory().openSession()) {

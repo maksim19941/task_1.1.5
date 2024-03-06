@@ -48,6 +48,7 @@ public class UserDaoHibernateImpl implements UserDao {
             e.printStackTrace();
         }
     }
+
     @Override
     public void saveUser(String name, String lastName, byte age) {
 
@@ -92,7 +93,7 @@ public class UserDaoHibernateImpl implements UserDao {
 
         List<User> user = new ArrayList<>();
 
-        try(Session session = getSessionFactory().openSession()) {
+        try (Session session = getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
             SQLQuery query = session.createSQLQuery(sql);
             query.addEntity(User.class);
@@ -105,9 +106,7 @@ public class UserDaoHibernateImpl implements UserDao {
             System.out.println(u.toString());
         }
         return user;
-}
-
-
+    }
 
 
     @Override

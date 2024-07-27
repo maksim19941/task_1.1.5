@@ -44,6 +44,7 @@ public class UserDaoJDBCImpl implements UserDao {
             e.printStackTrace();
         }
     }
+
     @Override
     public void saveUser(String name, String lastName, byte age) {
 
@@ -112,7 +113,6 @@ public class UserDaoJDBCImpl implements UserDao {
             e.printStackTrace();
         }
     }
-
 
 
 }

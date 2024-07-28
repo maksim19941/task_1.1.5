@@ -1,10 +1,10 @@
 package jm.task.core.jdbc.dao;
 
 import jm.task.core.jdbc.model.User;
-import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
+import javax.persistence.TypedQuery;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,6 +43,7 @@ public class UserDaoHibernateImpl implements UserDao {
         try (Session session = getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
             session.createNativeQuery(sql).executeUpdate();
+
             transaction.commit();
         } catch (Exception e) {
             e.printStackTrace();
@@ -51,15 +52,10 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public void saveUser(String name, String lastName, byte age) {
-        String sql = "INSERT INTO users (name, lastname, age) VALUES(?, ?, ?)";
 
         try (Session session = getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
-            session.createNativeQuery(sql)
-                    .setParameter(1, name)
-                    .setParameter(2, lastName)
-                    .setParameter(3, age)
-                    .executeUpdate();
+            session.save(new User(name, lastName, age));
             transaction.commit();
             System.out.println("User с именем " + name + " добавлен в базу данных");
         } catch (Exception e) {
@@ -69,36 +65,35 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public void removeUserById(long id) {
-        String sql = "DELETE FROM users WHERE id=?";
 
         try (Session session = getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
-            session.createNativeQuery(sql)
-                    .setParameter(1, id)
-                    .executeUpdate();
+            User user = session.get(User.class, id);
+            session.delete(user);
             transaction.commit();
+            System.out.println("Пользователь c ID " + id + " удалён");
         } catch (Exception e) {
             e.printStackTrace();
         }
+
     }
 
     @Override
     public List<User> getAllUsers() {
-        String sql = "SELECT id, name, age, lastname FROM users";
-        List<User> user = new ArrayList<>();
+
+        List<User> userlist = new ArrayList<>();
         try (Session session = getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
-            SQLQuery query = session.createSQLQuery(sql);
-            query.addEntity(User.class);
-            user = query.list();
+            TypedQuery<User> query = session.createQuery("SELECT u FROM User u", User.class);
+            userlist = query.getResultList();
             transaction.commit();
+            for (User el : userlist) {
+                System.out.println(el.toString());
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        for (User u : user) {
-            System.out.println(u.toString());
-        }
-        return user;
+        return userlist;
     }
 
 

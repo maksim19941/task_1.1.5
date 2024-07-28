@@ -4,7 +4,7 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "User", schema = "users")
+//@Table(name = "User", schema = "users")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -64,12 +64,11 @@ public class User {
 
     @Override
     public String toString() {
-        return "User {" +
-                " id=" + id +
-                ", name='" + name + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", age = " + age +
-                '}' + '\n';
+        return "User " +
+                "id = " + id +
+                ", name = '" + name + '\'' +
+                ", lastName = '" + lastName + '\'' +
+                ", age = " + age + "\n";
     }
 
     @Override

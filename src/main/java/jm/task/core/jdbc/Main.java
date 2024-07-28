@@ -31,12 +31,12 @@ public class Main {
             System.out.println("Ошибка удаления " + e);
         }
 
+
         try {
             userDao.getAllUsers();
         } catch (SQLException e) {
             System.out.println("Не удалось вернуть список пользователей " + e);
         }
-
 
         userDao.cleanUsersTable();
         userDao.dropUsersTable();
